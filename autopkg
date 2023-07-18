@@ -21,14 +21,6 @@ sleep 5
 pbd="$(pwd)/PKGBUILD"
 pd="$(pwd)/barg"
 
-cd $pbd
-echo "Start: Preparing the list of packages to build ..."
-sleep 2
-exa -D --long --no-filesize --no-icons --no-permissions --no-time --no-user > pkg.list
-sleep 2
-echo "End: Packages to Build Listed."
-
-i=0
 
 echo "Choose the desired command for root access (sudo/doas) :"
 read root
@@ -47,7 +39,16 @@ sleep 2
 echo "End: The dependencies were installed."
 sleep 2
 
-echo "Start: Making packages ..."
+cd $pbd
+echo "Start: Preparing the list of packages to build ..."
+sleep 2
+exa -D --long --no-filesize --no-icons --no-permissions --no-time --no-user > pkg.list
+sleep 2
+echo "End: Packages to Build Listed."
+
+i=0
+
+echo "\e[0;91mStart: Making packages ...\e[0;97m"
 sleep 2
 while read line; do
     i=$(($i+1))
@@ -100,4 +101,3 @@ sleep 1
 git commit -m $commitmsg
 git push -f
 echo "End: Changes Pushed."
-
