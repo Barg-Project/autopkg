@@ -5,24 +5,50 @@ mkdir apb
 cd apb
 
 echo "Start: Cloning PKGBUILDs ..."
+sleep 3
 git clone https://github.com/Barg-Project/PKGBUILD.git
+sleep 3
 echo "End: PKGBUILDs has ben Cloned."
+sleep 5
 
 echo "Start: Cloning BargOS pacman repository ..."
+sleep 3
 git clone https://github.com/Barg-Project/barg.git
+sleep 3
 echo "End: BargOS pacman repository has been Cloned."
+sleep 5
 
 pbd="$(pwd)/PKGBUILD"
 pd="$(pwd)/barg"
 
 cd $pbd
 echo "Start: Preparing the list of packages to build ..."
+sleep 2
 exa -D --long --no-filesize --no-icons --no-permissions --no-time --no-user > pkg.list
+sleep 2
 echo "End: Packages to Build Listed."
 
 i=0
 
+echo "Choose the desired command for root access (sudo/doas) :"
+read root
+sleep 2
+
+if [[ $root = "sudo" ]]; then
+    echo "Start: Installing Build Dependency ..."
+    sudo pacman -Sy $(cat dependency.list)
+elif [[ $root = "doas" ]]; then
+    echo "Start: Installing Build Dependency ..."
+    doas pacman -Sy $(cat dependency.list)
+else
+    exit
+fi
+sleep 2
+echo "End: The dependencies were installed."
+sleep 2
+
 echo "Start: Making packages ..."
+sleep 2
 while read line; do
     i=$(($i+1))
     cd $(echo "$line")
@@ -30,29 +56,32 @@ while read line; do
     mv *.pkg.tar.zst* $pd/x86_64/
     cd $pbd
 done < pkg.list
+sleep 2
 echo "End: Packages were made."
 
 cd $pd
+sleep 2
 echo "Start: Downloading README.md generator ..."
 wget https://raw.githubusercontent.com/Barg-Project/autopkg/main/auto-gen.py
 echo "End: README.md generator Downloaded."
-
+sleep 2
 echo "Start: Downloading repoadd script ..."
 wget https://raw.githubusercontent.com/Barg-Project/autopkg/main/repoadd.sh
 echo "End: repoadd script Downloaded."
-
+sleep 2
 echo "Start: Adding packages to repository ..."
 bash ./repoadd.sh barg
 echo "End: Packages were added to repository."
-
+sleep 2
 echo "Start: Generating README.md ..."
 python ./auto-gen.py
 echo "End: README.me Generated."
-
+sleep 2
 echo "Start: Cleaning ..."
 rm -rf auto-gen.py repoadd.sh
 echo "End: directory has been cleaned."
 
+sleep 2
 commit="$(date +%x)"
 echo "Start: Adding, Commiting & Pushing ..."
 git add -A
@@ -60,10 +89,15 @@ git commit -m $commit
 git push -f
 echo "End: Repository Pushed."
 
+sleep 2
 cd $pbd
 echo "Start: Pushing Changes ..."
 git add -A
-git commit -m $commit
+sleep 1
+echo "Enter your commit message:"
+read commitmsg
+sleep 1
+git commit -m $commitmsg
 git push -f
 echo "End: Changes Pushed."
 
