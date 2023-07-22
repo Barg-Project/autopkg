@@ -4,6 +4,16 @@ cd $HOME
 mkdir apb
 cd apb
 
+echo "Enter your name :"
+read ghun
+echo "Enter your E-mail :"
+read ghue
+sleep 2
+
+git config --global user.email $gue
+git config --global user.name $gun
+
+
 echo "Start: Cloning PKGBUILDs ..."
 sleep 3
 git clone https://github.com/Barg-Project/PKGBUILD.git
