@@ -10,8 +10,8 @@ echo "Enter your E-mail :"
 read ghue
 sleep 2
 
-git config --global user.email $gue
-git config --global user.name $gun
+git config --global user.email $ghue
+git config --global user.name $ghun
 
 
 echo "Start: Cloning PKGBUILDs ..."
