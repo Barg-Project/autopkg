@@ -26,10 +26,17 @@ echo "Choose the desired command for root access (sudo/doas) :"
 read root
 sleep 2
 
+cd $pbd
 if [[ $root = "sudo" ]]; then
+    if [[ -e /var/lib/pacman/db.lck ]]; then
+	sudo rm -rf /var/lib/pacman/db.lck
+    fi
     echo "Start: Installing Build Dependency ..."
     sudo pacman -Sy $(cat dependency.list)
 elif [[ $root = "doas" ]]; then
+    if [[ -e /var/lib/pacman/db.lck ]]; then
+        doas rm -rf /var/lib/pacman/db.lck
+    fi
     echo "Start: Installing Build Dependency ..."
     doas pacman -Sy $(cat dependency.list)
 else
@@ -39,7 +46,7 @@ sleep 2
 echo "End: The dependencies were installed."
 sleep 2
 
-cd $pbd
+
 echo "Start: Preparing the list of packages to build ..."
 sleep 2
 exa -D --long --no-filesize --no-icons --no-permissions --no-time --no-user > pkg.list
@@ -48,7 +55,7 @@ echo "End: Packages to Build Listed."
 
 i=0
 
-echo "\e[0;91mStart: Making packages ...\e[0;97m"
+echo "Start: Making packages ..."
 sleep 2
 while read line; do
     i=$(($i+1))
